@@ -1,7 +1,7 @@
 import { SessionContextManager } from 'context/manager'
 import { ExtensionStateAPI } from 'helpers/extensionState'
 import { queueAnAppendToDocument } from 'helpers/fileSystem'
-import { getUserOverrideOpenAiKey, heliconeKey } from 'helpers/keyManager'
+import { getUserOverrideHeliconeApiKey, getUserOverrideOpenAiApiBase, getUserOverrideOpenAiKey } from 'helpers/keyManager'
 import * as vscode from 'vscode'
 
 export interface SessionConfiguration {
@@ -13,11 +13,13 @@ export interface SessionConfiguration {
 export type LlmCredentials =
   | {
       type: 'openai'
-      key: string
+      key: string|undefined,
+      baseUrl: string|undefined
     }
   | {
       type: 'helicone'
-      key: string
+      key: string|undefined,
+      baseUrl: string|undefined
     }
 
 // Thoughts: is this more like a single llm call context?
@@ -346,15 +348,19 @@ export async function getLlmCredentials(
   context: vscode.ExtensionContext,
 ): Promise<LlmCredentials> {
   const userOverrideOpenAiKey = await getUserOverrideOpenAiKey(context.secrets)
+  const userOverrideOpenAiApiBase = await getUserOverrideOpenAiApiBase(context.secrets)
   if (userOverrideOpenAiKey) {
     return {
       type: 'openai',
       key: userOverrideOpenAiKey,
+      baseUrl: userOverrideOpenAiApiBase
     }
   }
 
+  var userOverrideHeliconeApiKey = await getUserOverrideHeliconeApiKey(context.secrets)
   return {
     type: 'helicone',
-    key: heliconeKey,
+    key: userOverrideHeliconeApiKey,
+    baseUrl: undefined
   }
 }

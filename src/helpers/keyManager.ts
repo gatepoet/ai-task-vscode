@@ -18,6 +18,39 @@ export async function getUserOverrideOpenAiKey(
 }
 
 /**
+ * If string is returned use open the eye directly without helicone proxy
+ */
+export async function getUserOverrideOpenAiApiBase(
+  secretStorage: vscode.SecretStorage,
+): Promise<string | undefined> {
+  const keyOverrideFromEnvironment = undefinedIfStringEmpty(
+    process.env.OPENAI_API_BASE,
+  )
+  const keyOverrideFromSecrets = undefinedIfStringEmpty(
+    await secretStorage.get('openaiApiBase'),
+  )
+
+  return keyOverrideFromEnvironment ?? keyOverrideFromSecrets
+}
+
+/**
+ * If string is returned use open the eye directly without helicone proxy
+ */
+export async function getUserOverrideHeliconeApiKey(
+  secretStorage: vscode.SecretStorage,
+): Promise<string | undefined> {
+  const keyOverrideFromEnvironment = undefinedIfStringEmpty(
+    process.env.HELICONE_API_KEY,
+  )
+  const keyOverrideFromSecrets = undefinedIfStringEmpty(
+    await secretStorage.get('heliconeApiKey'),
+  )
+
+  return keyOverrideFromEnvironment ?? keyOverrideFromSecrets
+}
+
+
+/**
  * Clear the key from the secret storage
  */
 export async function clearUserOverrideOpenAiKey(
@@ -44,10 +77,5 @@ export async function promptUserToEnterTheirOwnOpenAiKey(
   }
 }
 
-const hell: string = eval(
-  '[!+[]+!+[]+!+[]+!+[]+!+[]]+[!+[]+!+[]]+(![]+[])[+!+[]]+(![]+[])[+!+[]]+(!![]+[])[!+[]+!+[]+!+[]]+[!+[]+!+[]+!+[]]+([][(![]+[])[+[]]+(![]+[])[!+[]+!+[]]+(![]+[])[+!+[]]+(!![]+[])[+[]]]+[])[!+[]+!+[]+!+[]]+[+[]]+([][(!![]+[])[!+[]+!+[]+!+[]]+([][[]]+[])[+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(!![]+[])[!+[]+!+[]+!+[]]+(![]+[])[!+[]+!+[]+!+[]]]()+[])[!+[]+!+[]]+[+[]]+[!+[]+!+[]+!+[]+!+[]+!+[]+!+[]+!+[]+!+[]]+([][(!![]+[])[!+[]+!+[]+!+[]]+([][[]]+[])[+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(!![]+[])[!+[]+!+[]+!+[]]+(![]+[])[!+[]+!+[]+!+[]]]()+[])[!+[]+!+[]]',
-) as string
 
-export const heliconeKey =
-  `s` +
-  `k-helicone-proxy-3e225cq-tv7enhi-uwjpixy-yz3o3ji-a5045ff7-c3b9-43a3-967f-${hell}`
+//  `k-helicone-proxy-3e225cq-tv7enhi-uwjpixy-yz3o3ji-a5045ff7-c3b9-43a3-967f-${hell}`

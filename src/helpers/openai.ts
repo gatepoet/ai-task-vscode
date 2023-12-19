@@ -43,8 +43,8 @@ export interface OpenAIStreamCreationError {
 }
 
 type Credentials =
-  | { type: 'openai'; key: string }
-  | { type: 'helicone'; key: string }
+  | { type: 'openai'; key: string, baseUrl: 'https://api.openai.com/v1' }
+  | { type: 'helicone'; key: string, baseUrl: 'https://oai.hconeai.com/v1' }
 
 export function makeOpenAiInstance(
   credentials: Credentials,
@@ -55,13 +55,13 @@ export function makeOpenAiInstance(
     case 'openai':
       openai = new OpenAI({
         apiKey: credentials.key,
-        baseURL: 'https://api.openai.com/v1',
+        baseURL: credentials.baseUrl,
       })
       break
     case 'helicone':
       openai = new OpenAI({
         apiKey: credentials.key,
-        baseURL: 'https://oai.hconeai.com/v1',
+        baseURL: credentials.baseUrl,
         defaultHeaders: {
           'Helicone-User-Id': userIdentifierForLoggingAndAbuseDetection,
           // Do not store user's data
